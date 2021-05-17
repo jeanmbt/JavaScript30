@@ -18,7 +18,6 @@
 
   <style>
     html {
-      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
       background-size: cover;
       font-family: 'helvetica neue';
       text-align: center;
@@ -26,6 +25,7 @@
     }
 
     body {
+      background: #7c858b;
       margin: 0;
       font-size: 2rem;
       display: flex;
@@ -37,14 +37,16 @@
     .clock {
       width: 30rem;
       height: 30rem;
-      border: 20px solid white;
+      border: 6px solid rgb(231, 0, 181);
       border-radius: 50%;
       margin: 50px auto;
       position: relative;
       padding: 2rem;
+      transition: 1s;
+      transition-timing-function: ease-in-out;
       box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
+        0 0 10px 4px rgba(0,0,0,0.1),
+        inset 0 0 10px 3px #cfc7c7,
         inset 0 0 10px black,
         0 0 10px rgba(0,0,0,0.2);
     }
@@ -57,18 +59,78 @@
     }
 
     .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
+      background: linear-gradient(240deg, transparent 0%, rgb(255, 91, 255) 100%);
       position: absolute;
       top: 50%;
+      /*  */
+      transform-origin: 100%; /*  origin : right  */
+      transition-timing-function: cubic-bezier(0.92, -0.13, 0.78, 1.32);
+      
+      
+    }
+    .hour-hand {
+
+      width: 48%;
+      height: 10px;
+      top: 48%;
+    }
+    .min-hand {
+      width: 50%;
+      height: 8px;
+    }
+    .second-hand {
+      width: 50%;
+      height: 6px;
+    }
     }
 
   </style>
 
   <script>
+    const hourHand = document.querySelector('.hour-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const secondHand = document.querySelector('.second-hand');
+    const clock = document.querySelector('.clock')
 
+    function whichDegrees(timeDegrees, timeHand) {
+      if (timeDegrees <= 350 && timeDegrees >= 3 ) {
+        timeHand.style.transition = "rotate 0.5s";
+      } else {
+        timeHand.style.transition = "rotate 0s";
+      }
+    }
+    
+    function setDate() {
+      const now = new Date(); 
+      const hours = now.getHours();
+      const mins = now.getMinutes();
+      const seconds = now.getSeconds();
+      console.log(` Hours: ${hours}:${mins}:${seconds}`)
 
+      const hourDegrees = ((hours / 12) * 360) + ((mins/60)*30) + 90;
+      const minutesDegrees = ((mins / 60) * 360) + ((seconds/60)*6) + 90;;
+      const secondsDegrees = ((seconds / 60) * 360);
+
+      hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+      hourHand.style.filter = `hue-rotate(${hourDegrees + 5}deg)`;
+      minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+      minuteHand.style.filter = `hue-rotate(${minutesDegrees + 10 }deg)`;
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      secondHand.style.filter = `hue-rotate(${secondsDegrees}deg)`;
+
+      if (timeDegrees <= 350 && timeDegrees >= 3 ) {
+        clock.style.transition = '1s';
+      } else {
+        clock.style.transition = '0s';
+      }
+      whichDegrees(hourDegrees, hourHand)
+      whichDegrees(minutesDegrees, minuteHand)
+      whichDegrees(secondsDegrees, secondHand)
+
+    }
+
+    setInterval(setDate, 1000)
+    
   </script>
 </body>
 </html>
